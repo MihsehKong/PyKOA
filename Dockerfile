@@ -37,5 +37,6 @@ RUN pip install pykoa && \
 
 WORKDIR /work
 
-CMD /bin/sh
+CMD python -m pytest --cov=pykoa --cov=modules && \
+    coveralls 
 
