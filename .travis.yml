@@ -7,5 +7,5 @@ install:
   - docker build --tag pykoa:latest .
 
 script:
-  - docker run --env TRAVIS_JOB_ID=$TRAVIS_JOB_ID pykoa
+  - docker run --env TRAVIS_JOB_ID=$TRAVIS_JOB_ID pykoa:latest
   
