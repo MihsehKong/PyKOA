@@ -1,42 +1,29 @@
-#  All Docker images have to be built 'FROM' something
+# Use python 3.6 
+FROM python:3.6-slim
 
-FROM debian:latest
+#ENV COVERALLS_REPO_TOKEN=DTh5zu0mScNMiQHUk8gD289eWkrNLMNDG
 
-#  This is the way you set environment variables to be use in the running container
+# install this way to fix paths in coverage report
+ENV PYTHONPATH=$PYTHONPATH:/code/pykoa
 
-ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
-ENV PATH /opt/conda/bin:$PATH
+# setup the working directory
+RUN mkdir /code && \
+    mkdir /code/pykoa && \
+    apt-get --yes update && \
+    apt install build-essential -y --no-install-recommends && \
+    apt-get install --yes git && \
+    cd /code
 
+# Set the working directory to KPF-Pipeline
+WORKDIR /code/pykoa
+ADD . /code/pykoa
 
-# 'RUN' directives modify the image in the same way running these commands would
-#  change an OS instance.  Only here we are modifying what will be installed in
-#  the saved Docker image.  We start with a few basic utilities that don't come 
-#  with baseline debian.  The reason for all the continuation lines is that 
-#  every  RUN creates another layer and uses up more disk space.
+# Install the package
+RUN pip3 install -r /code/pykoa/requirements.txt && \
+    pip3 install --no-cache-dir --no-deps .
 
-RUN apt update --fix-missing && \
-    apt install -y wget bzip2 git && \
-    apt install -y curl grep sed && \
-    apt install -y vim && \
-    apt install -y build-essential
+#CMD pytest --cov=pykoa --cov=modules && \
+#    coveralls
 
-
-#  Installing Anaconda gives us a bunch of tools (in particular Jupyter 
-#  and Astropy) that will let us better interact with our data.
-
-RUN wget --quiet https://repo.anaconda.com/archive/Anaconda3-2019.07-Linux-x86_64.sh -O ~/anaconda.sh && \
-    /bin/bash ~/anaconda.sh -b -p /opt/conda && \
-    rm ~/anaconda.sh
-
-RUN pip install pykoa && \
-    pip install pytest
-
-#  Finally, for this container we want the default application to just be 
-#  a shell so we can be logged-in as soon as we start the container.  
-#  Other containers often default to running a web server, etc.
-
-WORKDIR /work
-
-CMD python -m pytest --cov=pykoa --cov=modules && \
-    coveralls 
+CMD pytest --cov=pykoa --cov=modules
 
