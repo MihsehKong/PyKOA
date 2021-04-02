@@ -14,7 +14,7 @@ RUN mkdir /code && \
     apt-get install --yes git && \
     cd /code
 
-# Set the working directory to KPF-Pipeline
+# Set the working directory to /code/pykoa 
 WORKDIR /code/pykoa
 ADD . /code/pykoa
 
@@ -25,5 +25,7 @@ RUN pip3 install -r /code/pykoa/requirements.txt && \
 #CMD pytest --cov=pykoa --cov=modules && \
 #    coveralls
 
-CMD pytest --cov=pykoa --cov=modules
+#CMD pytest -s -v --cov=pykoa --cov=modules
+
+CMD pytest -s -v --cov=pykoa
 
