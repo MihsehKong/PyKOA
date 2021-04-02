@@ -13,7 +13,7 @@ userdict = {
    "koaadmin_xxzuxbor10":"Failed to login: Incorrect password [xxzuxbor10] for userid [koaadmin]"
 }
 
-server = "http://vmkoatest.ipac.caltech.edu:8000/"
+#server = "http://vmkoatest.ipac.caltech.edu:8000/"
 
 #
 #    test login method: correctly, wrong userid, and wrong password
@@ -28,8 +28,10 @@ def test_login_success (user, expected, capsys):
     
     Koa.login ('./tapcookie.txt', \
         userid=userid, \
-        password=password, \
-        server=server)
+        password=password)
+        
+        #password=password, \
+        #server=server)
     
     out, err = capsys.readouterr()
     assert out.startswith (expected)
@@ -64,8 +66,10 @@ def test_query_datetime (instr, datetime, capsys):
     Koa.query_datetime (instr, \
         datetime, \
         outpath, \
-        cookiepath='./tapcookie.txt', \
-        server=server)
+        cookiepath='./tapcookie.txt')
+        
+        #cookiepath='./tapcookie.txt', \
+        #server=server)
     
     assert os.path.exists(outpath), \
         f'Result not downloaded to file [{outpath:s}]'
